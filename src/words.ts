@@ -13,7 +13,7 @@ export const TURKISH_WORDS = [
   "Köprü", "Tünel", "Orman", "Çöl", "Mağara", "Vadi", "Dağ", "Tepe", "Bahçe", "Park",
   "Müze", "Tiyatro", "Sinema", "Kütüphane", "Sergi", "Konser", "Şarkı", "Müzik", "Resim", "Heykel",
   "Dans", "Oyun", "Spor", "Futbol", "Basketbol", "Tenis", "Yüzme", "Koşu", "Bisiklet", "Satranç",
-  "Kart", Zar, "Zaman", "Tarih", "Gelecek", "Geçmiş", "Rüya", "Hayal", "Gerçek", "Yalan",
+  "Kart", "Zar", "Zaman", "Tarih", "Gelecek", "Geçmiş", "Rüya", "Hayal", "Gerçek", "Yalan",
   "Doğru", "Sır", "Anahtar", "Kilit", "Kapı", "Pencere", "Duvar", "Çatı", "Zemin", "Ayna"
 ];
 
