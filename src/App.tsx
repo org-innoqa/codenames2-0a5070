@@ -54,6 +54,7 @@ interface GameLog {
 export default function App() { 
   // User state
   const [nickname, setNickname] = useState<string>(() => localStorage.getItem('cn_nickname') || '');
+  const [roomCodeInput, setRoomCodeInput] = useState<string>('');
   const [roomCode, setRoomCode] = useState<string>('');
   const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
 
@@ -137,7 +138,7 @@ export default function App() {
         oscillator.start();
         oscillator.stop(audioCtx.currentTime + 0.1);
       }
-    } catch (e) {
+    } catch (e) { 
       console.error("Audio error", e);
     }
   };
@@ -206,7 +207,7 @@ export default function App() {
       const code = Math.random().toString(36).substring(2, 6).toUpperCase();
       
       // Create room record
-      await db.insert('rooms', {
+      await db.insert('rooms', { 
         code,
         status: 'lobby',
         turn: 'red',
@@ -230,6 +231,7 @@ export default function App() {
         message: `${nickname.trim()} odayı kurdu.`
       });
 
+      setRoomCodeInput(code);
       setRoomCode(code);
       setCurrentPlayer(newPlayer as Player);
       playSound('click');
@@ -246,13 +248,13 @@ export default function App() {
       setError("Lütfen önce bir rumuz girin.");
       return;
     }
-    if (!roomCode.trim()) {
+    if (!roomCodeInput.trim()) {
       setError("Lütfen geçerli bir oda kodu girin.");
       return;
     }
     setLoading(true);
     setError(null);
-    const targetCode = roomCode.trim().toUpperCase();
+    const targetCode = roomCodeInput.trim().toUpperCase();
     try {
       const roomsData = await db.select('rooms', `?code=eq.${targetCode}`);
       if (!roomsData || roomsData.length === 0) {
@@ -314,6 +316,7 @@ export default function App() {
       }
     }
     setRoomCode('');
+    setRoomCodeInput('');
     setRoom(null);
     setCurrentPlayer(null);
     setCards([]);
@@ -742,8 +745,8 @@ export default function App() {
                       <input
                         type="text"
                         maxLength={6}
-                        value={roomCode}
-                        onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
+                        value={roomCodeInput}
+                        onChange={(e) => setRoomCodeInput(e.target.value.toUpperCase())}
                         placeholder="KOD"
                         className="bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-center text-white placeholder-slate-700 focus:outline-none focus:border-spyblue focus:ring-1 focus:ring-spyblue transition-all font-mono font-bold tracking-widest text-lg w-32 uppercase"
                       />
@@ -897,7 +900,7 @@ export default function App() {
                     <Play size={18} />
                     Oyunu Başlat
                   </button>
-                ) : (
+                ) : ( 
                   <button
                     onClick={startGame}
                     disabled={loading}
