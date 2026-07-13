@@ -51,7 +51,7 @@ interface GameLog {
   created_at: string;
 }
 
-export default function App() {
+export default function App() { 
   // User state
   const [nickname, setNickname] = useState<string>(() => localStorage.getItem('cn_nickname') || '');
   const [roomCode, setRoomCode] = useState<string>('');
@@ -76,8 +76,8 @@ export default function App() {
 
   // Save nickname to local storage
   useEffect(() => {
-    if (nickname) {
-      localStorage.setItem('cn_nickname', nickname);
+    if (nickname.trim()) {
+      localStorage.setItem('cn_nickname', nickname.trim());
     }
   }, [nickname]);
 
@@ -190,7 +190,7 @@ export default function App() {
       // Fetch Logs
       const logsData = await db.select('game_logs', `?room_code=eq.${roomCode}&order=created_at.desc&limit=15`);
       setLogs(logsData as GameLog[]);
-    } catch (err) {
+    } catch (err) { 
       console.error("Error fetching game state:", err);
     }
   };
@@ -690,7 +690,7 @@ export default function App() {
               <div className="space-y-5">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
-                    Rumuzunuz (Nickname)
+                    Rumuzunuz (Nickname) <span className="text-red-500">* Zorunlu</span>
                   </label>
                   <div className="relative">
                     <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500">
@@ -702,9 +702,18 @@ export default function App() {
                       value={nickname}
                       onChange={(e) => setNickname(e.target.value)}
                       placeholder="Örn: Ajan_007"
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-white placeholder-slate-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all font-medium"
+                      className={`w-full bg-slate-950 border rounded-xl py-3 pl-10 pr-4 text-white placeholder-slate-600 focus:outline-none focus:ring-1 transition-all font-medium ${
+                        !nickname.trim() 
+                          ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500' 
+                          : 'border-slate-800 focus:border-purple-500 focus:ring-purple-500'
+                      }`}
                     />
                   </div>
+                  {!nickname.trim() && (
+                    <p className="text-red-400 text-xs mt-1.5 font-semibold flex items-center gap-1 animate-pulse">
+                      ⚠️ Devam etmek için bir rumuz (nickname) yazmalısınız!
+                    </p>
+                  )}
                 </div>
 
                 <div className="border-t border-slate-800/80 my-6"></div>
@@ -712,8 +721,8 @@ export default function App() {
                 <div className="grid grid-cols-1 gap-4">
                   <button
                     onClick={createRoom}
-                    disabled={loading}
-                    className="w-full bg-gradient-to-r from-spyred to-spyred-dark hover:from-red-500 hover:to-red-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-red-900/20 hover:shadow-red-900/40 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    disabled={loading || !nickname.trim()}
+                    className="w-full bg-gradient-to-r from-spyred to-spyred-dark hover:from-red-500 hover:to-red-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-red-900/20 hover:shadow-red-900/40 transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <Play size={20} />
                     Yeni Oda Kur
@@ -740,8 +749,8 @@ export default function App() {
                       />
                       <button
                         onClick={joinRoom}
-                        disabled={loading}
-                        className="flex-1 bg-gradient-to-r from-spyblue to-spyblue-dark hover:from-blue-500 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-blue-900/20 hover:shadow-blue-900/40 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                        disabled={loading || !nickname.trim()}
+                        className="flex-1 bg-gradient-to-r from-spyblue to-spyblue-dark hover:from-blue-500 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-blue-900/20 hover:shadow-blue-900/40 transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         <Users size={18} />
                         Odaya Gir
@@ -777,7 +786,7 @@ export default function App() {
                   </div>
                   
                   <div className="space-y-1.5">
-                    {players.filter(p => p.team === 'red').map(p => (
+                    {players.filter(p => p.team === 'red').map(p => ( 
                       <div key={p.id} className="flex items-center justify-between bg-slate-950/50 px-2.5 py-1.5 rounded-lg text-xs">
                         <span className="font-semibold text-slate-200 flex items-center gap-1">
                           {p.role === 'spymaster' ? '🕵️‍♂️' : '🏃‍♂️'}
@@ -815,7 +824,7 @@ export default function App() {
                   </div>
                   
                   <div className="space-y-1.5">
-                    {players.filter(p => p.team === 'blue').map(p => (
+                    {players.filter(p => p.team === 'blue').map(p => ( 
                       <div key={p.id} className="flex items-center justify-between bg-slate-950/50 px-2.5 py-1.5 rounded-lg text-xs">
                         <span className="font-semibold text-slate-200 flex items-center gap-1">
                           {p.role === 'spymaster' ? '🕵️‍♂️' : '🏃‍♂️'}
@@ -906,7 +915,7 @@ export default function App() {
               {/* Status Banner */}
               <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-md flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className={`w-3.5 h-3.5 rounded-full animate-ping ${
+                  <div className={`w-3.5 h-3.5 rounded-full animate-ping ${ 
                     room?.turn === 'red' ? 'bg-red-500' : 'bg-blue-500'
                   }`}></div>
                   <div>
